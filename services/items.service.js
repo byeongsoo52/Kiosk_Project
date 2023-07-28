@@ -25,8 +25,8 @@ class ItemService {
         }
         // 알맞은 타입이 아닐경우 ‘알맞은 타입을 지정해주세요’라는 메세지 반환
 
-        await this.ItemRepository.updateItem(name, option_id, price, type, amount);
-        return new ServiceReturn('리뷰를 수정하였습니다.', 201, true);
+        await this.ItemRepository.createItem(name, option_id, price, type, amount);
+        return new ServiceReturn('아이템을 생성하였습니다.', 201, true);
     };
 
     deleteItem = async (id) => {

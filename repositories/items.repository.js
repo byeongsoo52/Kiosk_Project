@@ -14,13 +14,13 @@ class ItemRepository {
     };
 
     updateItem = async (name, option_id, price, type, amount) => {
-        const updateItem = await Item.update(
+        const updateItemData = await Item.update(
             { name, option_id, price, type, amount },
             {
                 where: { id },
             }
         );
-        return updateItem;
+        return updateItemData;
     };
 
     deleteItem = async (id) => {
