@@ -11,10 +11,63 @@ class OrderItemService {
         return new ServiceReturn('리뷰를 수정하였습니다.', 201, true);
     };
 
-    // 발주 상태를 수정하는 것을 구현해야한다. (ordered, pending, canceled, completed)
-    updateOrderItem = async (item_id, amount, state) => {
-        const findItem = await this.orderItemRepository.findId(id);
-        await this.orderItemRepository.updateOrderItem(item_id, amount, state);
-        return new ServiceReturn('리뷰를 수정하였습니다.', 201, true);
+    updateOrderItem = async (id, state) => {
+        const orderitem = await this.orderItemRepository.findOrderItemById(id);
+        const prevState = orderitem.state;
+
+        if (prevState === 'ORDERED' && state === 'PENDING') {
+            return this.orderItemRepository.updateOrderItem(id, state);
+        } else if ((prevState === 'ORDERED' || prevState === 'PENDING') && state === 'CANCELED') {
+            return this.orderItemRepository.updateOrderItem(id, state);
+        } else if ((prevState === 'ORDERED' || prevState === 'PENDING') && state === 'COMPLETED') {
+            const t = await sequelize.transaction();
+            try {
+                // 발주 정보 업데이트
+                await this.orderItemRepository.updateOrderItem(id, state, {
+                    transaction: t,
+                });
+
+                // 발주 정보 조회
+                const updatedOrderItem = await this.orderItemRepository.findOrderItemById(id, {
+                    transaction: t,
+                });
+
+                // 상품의 수량 업데이트
+                await this.itemRepository.updateItemAmount(updatedOrderItem.itemId, updatedOrderItem.amount, { transaction: t });
+
+                await t.commit();
+                return updatedOrderItem;
+            } catch (error) {
+                await t.rollback();
+                throw error;
+            }
+        } else if (prevState === 'COMPLETED' && (state === 'CANCELED' || state === 'PENDING' || state === 'ORDERED')) {
+            const t = await sequelize.transaction();
+            try {
+                // 발주 정보 업데이트
+                await this.orderItemRepository.updateOrderItem(id, state, {
+                    transaction: t,
+                });
+
+                // 발주 정보 조회
+                const updatedOrderItem = await this.orderItemRepository.findOrderItemById(id, {
+                    transaction: t,
+                });
+
+                // 상품의 수량 업데이트
+                await this.itemRepository.cancelItemAmount(updatedOrderItem.itemId, updatedOrderItem.amount, { transaction: t });
+
+                await t.commit();
+                return updatedOrderItem;
+            } catch (error) {
+                await t.rollback();
+                throw error;
+            }
+        } else {
+            // 다른 상태일 경우 그냥 발주 정보만 업데이트
+            return this.orderItemRepository.updateOrderItem(id, state);
+        }
     };
 }
+
+module.exports = OrderItemService;

@@ -1,7 +1,7 @@
-const orderItemService = require('../services/orderItems.service');
+const OrderItemService = require('../services/orderItems.service');
 
-class orderItemsController {
-    orderItemService = new orderItemService();
+class OrderItemsController {
+    orderItemService = new OrderItemService();
 
     createOrderItem = async (req, res) => {
         try {
@@ -29,4 +29,4 @@ class orderItemsController {
     };
 }
 
-module.exports = orderItemsController;
+module.exports = OrderItemsController;

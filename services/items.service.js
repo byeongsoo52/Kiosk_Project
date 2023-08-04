@@ -19,14 +19,16 @@ class ItemService {
     };
 
     createItem = async (name, option_id, price, type, amount) => {
-        // 이름, 가격이없을 경우 ‘{name}을 입력해주세요’라는 메세지 반환
-        if (!name || !price) {
-            throw new Error('상품명, 가격을 입력하세요.');
+        const createItemData = await this.itemRepository.createItem(name, price, type, optionId);
+        if (!name) {
+            throw new Error('상품 이름을 입력하세요');
+        } else if (!price) {
+            throw new Error('상품 가격을 입력하세요');
+        } else if (!type) {
+            throw new Error('상품 타입을 입력하세요');
+        } else {
+            return createItemData;
         }
-        // 알맞은 타입이 아닐경우 ‘알맞은 타입을 지정해주세요’라는 메세지 반환
-
-        await this.ItemRepository.createItem(name, option_id, price, type, amount);
-        return new ServiceReturn('아이템을 생성하였습니다.', 201, true);
     };
 
     deleteItem = async (id) => {
@@ -40,3 +42,5 @@ class ItemService {
         return new ServiceReturn('아이템을 수정하였습니다.', 201, true);
     };
 }
+
+module.exports = ItemService;

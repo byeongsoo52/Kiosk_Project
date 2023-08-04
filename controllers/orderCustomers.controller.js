@@ -1,7 +1,7 @@
-const orderCustomerService = require('../services/orderCustomers.service');
+const OrderCustomerService = require('../services/orderCustomers.service');
 
-class orderCustomersController {
-    orderCustomerService = new orderCustomerService();
+class OrderCustomersController {
+    orderCustomerService = new OrderCustomerService();
 
     createOrderCustomerItem = async (req, res) => {
         try {
