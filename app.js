@@ -1,36 +1,15 @@
-const express = require("express");
-const { sequelize } = require("./models");
-const dotenv = require("dotenv");
-const session = require("express-session");
+const express = require('express');
+const router = require('./routes/index');
 
-// 서버 클래스 정의
-class Server {
-  constructor() {
-    this.app = express();
-    this.port = 3000;
-    this.isRunning = false;
-  }
+const dotenv = require('dotenv');
+dotenv.config();
 
-  start() {
-    if (!this.isRunning) {
-      console.log(`서버가 ${this.port}에서 시작되었습니다.`);
-      this.isRunning = true;
-    } else {
-      console.log("서버가 이미 실행 중입니다.");
-    }
-  }
+const app = express();
+const PORT = 3000;
 
-  stop() {
-    if (this.isRunning) {
-      console.log(`서버가 ${this.port}에서 종료되었습니다.`);
-      this.isRunning = false;
-    } else {
-      console.log("서버가 이미 종료되었습니다.");
-    }
-  }
-}
+app.use(express.json());
+app.use('/', router);
 
-const server = new Server();
-
-server.start();
-server.stop();
+app.listen(PORT, () => {
+    console.log(PORT, '포트 번호로 서버가 실행되었습니다.');
+});
