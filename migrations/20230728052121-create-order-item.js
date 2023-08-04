@@ -2,6 +2,12 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
     async up(queryInterface, Sequelize) {
+        const orderItemState = {
+            ORDERED: 'ORDERED',
+            PENDING: 'PENDING',
+            COMPLETED: 'COMPLETED',
+            CANCELED: 'CANCELED',
+        };
         await queryInterface.createTable('orderItems', {
             id: {
                 allowNull: false,
@@ -16,8 +22,8 @@ module.exports = {
                 type: Sequelize.INTEGER,
             },
             state: {
-                type: Sequelize.STRING,
-                defaultValue: 0,
+                type: Sequelize.ENUM(Object.values(orderItemState)),
+                defaultValue: orderItemState.ORDERED,
             },
             createdAt: {
                 allowNull: false,

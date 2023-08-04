@@ -1,5 +1,13 @@
 'use strict';
 const { Model } = require('sequelize');
+
+const orderItemState = {
+    ORDERED: 0,
+    PENDING: 1,
+    COMPLETED: 2,
+    CANCELED: 3,
+};
+
 module.exports = (sequelize, DataTypes) => {
     class orderItem extends Model {
         /**
@@ -26,8 +34,8 @@ module.exports = (sequelize, DataTypes) => {
                 type: Sequelize.INTEGER,
             },
             state: {
-                type: Sequelize.STRING,
-                defaultValue: 0,
+                type: Sequelize.ENUM(Object.values(orderItemState)),
+                defaultValue: orderItemState.ORDERED,
             },
             createdAt: {
                 allowNull: false,
