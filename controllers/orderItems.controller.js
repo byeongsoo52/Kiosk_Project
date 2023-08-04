@@ -28,3 +28,5 @@ class orderItemsController {
         }
     };
 }
+
+module.exports = orderItemsController;

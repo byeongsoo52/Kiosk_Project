@@ -1,12 +1,16 @@
 const OrderCustomerRepository = require('../repositories/orderCustomers.repository');
 const ItemOrderCustomerRepository = require('../repositories/itemOrderCustomers.repository');
 const ItemRepository = require('../repositories/items.repository');
+const OptionRepository = require('../repositories/options.repository');
+const { Item, Option } = require('../models');
 const { sequelize } = require('../models');
+const { Op } = require('sequelize');
 
 class OrderCustomerService {
     OrderCustomerRepository = new OrderCustomerRepository();
     ItemOrderCustomerRepository = new ItemOrderCustomerRepository();
     ItemRepository = new ItemRepository();
+    optionRepository = new OptionRepository();
 
     createOrderCustomer = async (customerId, orderItems) => {
         let totalAmount = 0;
